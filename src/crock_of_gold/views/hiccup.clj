@@ -82,7 +82,7 @@
   [:div {:class "example-content"}
    [:div {:class "expand col-lg-8 col-lg-offset-2"}
     (when-let [success (:success context)]
-      [:div {:class "alert alert-success"} (str "You are a great person, " (:username context) "!")])
+      [:div {:class "alert alert-success"} (str "You are a great person, " (:name context) "!")])
     [:div {:class "col-lg-10 col-lg-offset-1"}
      [:form {:method "POST" :action "/hiccup" :accept-charset "UTF-8"}
       [:fieldset
@@ -105,7 +105,7 @@
   [:div
    [:div {:class "file-name"}
     (:name file)]
-   [:pre [:code {:class "clojure"}
+   [:pre [:code {:class (:type file)}
           (:content file)]]])
 
 (defn hiccup-sources-page

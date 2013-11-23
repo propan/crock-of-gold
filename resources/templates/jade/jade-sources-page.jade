@@ -1,0 +1,18 @@
+extends layout
+
+block title
+    | clj-jade :: Demo
+
+block top-navigation
+    mixin top-nav('clj-jade')
+
+block content
+    h1 clj-jade
+    mixin navigation-pills('sources')
+    .example-content
+        each file in files
+            div
+                .file-name= file.name
+                pre
+                    code(class=file.class)
+                        | #{file.content}

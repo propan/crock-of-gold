@@ -1,4 +1,4 @@
-mixin top-nav(active, user)
+mixin top-nav(active)
     nav.navbar.navbar-default(role='navigation')
         .navbar-header
             button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
@@ -19,3 +19,18 @@ mixin top-nav(active, user)
                     a(href='/selmer') Selmer
                 li(class=(active=='clj-jade' ? 'active' : ''))
                     a(href='/clj-jade') clj-jade
+
+mixin navigation-pills(active)
+    .example
+        ul(class='nav nav-pills nav-justified')
+            li(class=(active=='form' ? 'active' : ''))
+                a(href='/clj-jade') Signup Form
+            li(class=(active=='sources' ? 'active' : ''))
+                a(href='/clj-jade/sources') Sources
+
+mixin form-input(type, name, title, placeholder, value, hint)
+    div(class=(hint ? 'form-group has-error' : 'form-group'))
+        label(for=id, class='control-label hidden')= title
+        input(type=type, name=name, class='form-control', id=name, placeholder=placeholder, value=value)
+        if hint
+            p.help-block= hint
