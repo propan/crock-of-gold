@@ -40,6 +40,15 @@
       [:li (when (= active "clj-jade") {:class "active"})
        [:a {:href "/clj-jade"} "clj-jade"]]]]]])
 
+(defn- navigation-pills
+  [active]
+  [:div {:class "example"}
+   [:ul {:class "nav nav-pills nav-justified"}
+    [:li (when (= active "form") {:class "active"})
+     [:a {:href "/hiccup"} "Signup Form"]]
+    [:li (when (= active "sources") {:class "active"})
+     [:a {:href "/hiccup/sources"} "Sources"]]]])
+
 (defn layout
   [active title & content]
   (ring-resp/response
@@ -59,10 +68,50 @@
      [:script
       "hljs.initHighlightingOnLoad();"]])))
 
-(defn hiccup-page
+(defn- form-input
+  [context type name label placeholder]
+  (let [key   (keyword name)
+        error (get-in context [:data-errors key])]
+    [:div {:class (if error "form-group has-error" "form-group")}
+     [:label {:for name :class "control-label hidden"} label]
+     [:input {:type type :class "form-control" :id name :name name :placeholder placeholder :autocomplete "off" :value (get-in context [:data key])}]
+     (when error [:p {:class "help-block"} error])]))
+
+(defn- signup-form
+  [context]
+  [:div {:class "example-content"}
+   [:div {:class "expand col-lg-8 col-lg-offset-2"}
+    (when-let [success (:success context)]
+      [:div {:class "alert alert-success"} (str "You are a great person, " (:username context) "!")])
+    [:div {:class "col-lg-10 col-lg-offset-1"}
+     [:form {:method "POST" :action "/hiccup" :accept-charset "UTF-8"}
+      [:fieldset
+       [:legend "Sign up"]
+       (form-input context "text" "username" "Username:" "Username")
+       (form-input context "text" "email" "Email:" "bob@the-bobs.com")
+       (form-input context "password" "password" "Password:" "Password")
+       [:div {:class "form-group"}
+        [:button {:type "submit" :class "btn btn-default btn-block"} "Sign up"]]]]]]])
+
+(defn hiccup-signup-page
+  [context]
+  (layout "hiccup" "Hiccup Signup :: Demo"
+          [:h1 "Hiccup"]
+          (navigation-pills "form")
+          (signup-form context)))
+
+(defn- render-file
+  [file]
+  [:div
+   [:div {:class "file-name"}
+    (:name file)]
+   [:pre [:code {:class "clojure"}
+          (:content file)]]])
+
+(defn hiccup-sources-page
   [context]
   (layout "hiccup" "Hiccup :: Demo"
           [:h1 "Hiccup"]
-          [:pre
-           [:code {:class "clojure"}
-            (:file context)]]))
+          (navigation-pills "sources")
+          [:div {:class "example-content"}
+           (map render-file (:files context))]))

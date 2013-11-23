@@ -10,7 +10,8 @@
                  [hiccup "1.0.4"]
                  [enlive "1.1.4"]
                  [selmer "0.5.3"]
-                 [clj-jade "0.1.4"]]
+                 [clj-jade "0.1.4"]
+                 [formar "0.1.2"]]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   :aliases {"run-dev" ["trampoline" "run" "-m" "crock-of-gold.server/run-dev"]}
