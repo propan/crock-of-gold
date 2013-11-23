@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Selmer :: Demo
+{% endblock %}
+
+{% block header %}
+    {% include "navbar.html" %}
+{% endblock %}
+
+{% block content %}
+    <h1>Selmer</h1>
+    <pre>
+      <code class="django">{{ file }}</code>
+    </pre>
+{% endblock %}

@@ -1,0 +1,30 @@
+<nav class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <button class="navbar-toggle" data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">The Crock of Gold</a>
+  </div>
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+      <li {% ifequal active "home" %}class="active"{% endifequal %}>
+        <a href="/">Home</a>
+      </li>
+      <li {% ifequal active "hiccup" %}class="active"{% endifequal %}>
+        <a href="/hiccup">Hiccup</a>
+      </li>
+      <li {% ifequal active "enlive" %}class="active"{% endifequal %}>
+        <a href="/enlive">Enlive</a>
+      </li>
+      <li {% ifequal active "selmer" %}class="active"{% endifequal %}>
+        <a href="/selmer">Selmer</a>
+      </li>
+      <li {% ifequal active "clj-jade" %}class="active"{% endifequal %}>
+        <a href="/clj-jade">clj-jade</a>
+      </li>
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,14 @@
+@media (min-width: 1024px) {
+  .container {
+    max-width: 980px;
+  }
+}
+
+body {
+    padding-bottom: 50px;
+}
+
+pre {
+    background-color: #fff;
+    border: none;
+}

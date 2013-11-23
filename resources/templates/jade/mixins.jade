@@ -1,0 +1,21 @@
+mixin top-nav(active, user)
+    nav.navbar.navbar-default(role='navigation')
+        .navbar-header
+            button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a(class='navbar-brand', href='/') The Crock of Gold
+        .collapse.navbar-collapse.navbar-ex1-collapse
+            ul.nav.navbar-nav
+                li(class=(active=='home' ? 'active' : ''))
+                    a(href='/') Home
+                li(class=(active=='hiccup' ? 'active' : ''))
+                    a(href='/hiccup') Hiccup
+                li(class=(active=='enlive' ? 'active' : ''))
+                    a(href='/enlive') Enlive
+                li(class=(active=='selmer' ? 'active' : ''))
+                    a(href='/selmer') Selmer
+                li(class=(active=='clj-jade' ? 'active' : ''))
+                    a(href='/clj-jade') clj-jade
