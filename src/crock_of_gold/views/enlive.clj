@@ -1,10 +1,10 @@
 (ns crock-of-gold.views.enlive
-  (:require [net.cgrand.enlive-html :as html]
+  (:require [net.cgrand.enlive-html :as h :refer [deftemplate defsnippet]]
             [io.pedestal.service.log :as log]
             [ring.util.response :as ring-resp]))
 
 (def add-active-class
-  (html/add-class "active"))
+  (h/add-class "active"))
 
 (defn- menu-highlighter
   [active]
@@ -13,20 +13,64 @@
      (cond-> (assoc % :attrs (dissoc attrs :menu-item))
              (= name active) add-active-class)))
 
-(html/deftemplate layout "templates/enlive/layout.html"
+(deftemplate layout "templates/enlive/layout.html"
   [active title content]
-  [:head :title]                  (html/content title)
-  [[:li (html/attr? :menu-item)]] (menu-highlighter "enlive")
-  [:#content]                     (html/content content))
+  [:head :title]               (h/content title)
+  [[:li (h/attr? :menu-item)]] (menu-highlighter "enlive")
+  [:#content]                  (h/content content))
 
-(html/defsnippet enlive-page-snippet "templates/enlive/enlive-page-content.html" [:#content :> :*]
-  [{:keys [title file] :as context}]
-  [:h1]   (html/content title)
-  [:code] (html/content file))
+(defsnippet navigation-pills-snippet "templates/enlive/navigation-pills.html" [:#content :> :*]
+  [active]
+  [[:li (h/attr? :menu-item)]] (menu-highlighter active))
 
+(defn transform-field
+  [fields]
+  (fn [node]
+    (let [field-name (keyword (get-in node [:attrs :form-field]))
+          value      (get-in fields [:data field-name] "")
+          error      (get-in fields [:data-errors field-name])]
+      (h/at node
+        [h/root]        (h/do->
+                         (h/remove-attr :form-field)
+                         (if (nil? error)
+                           identity
+                           (h/add-class "has-error")))
+        [:input]        (h/set-attr :value value)
+        [:p.help-block] (when-not (nil? error)
+                          (h/content error))))))
 
-(defn enlive-page
+(defn transform-alert
+  [success name]
+  (fn [node]
+    (when-not (nil? success)
+      (h/at node
+            [h/any-node] (h/replace-vars {:name name})))))
+
+(defsnippet enlive-signup-snippet "templates/enlive/enlive-signup-content.html" [:#content :> :*]
+  [{:keys [title success name] :as context}]
+  [:h1]                    (h/content title)
+  [:div.example]           (h/substitute (navigation-pills-snippet "form"))
+  [:div.alert]             (transform-alert success name)
+  [(h/attr? :form-field )] (transform-field context))
+
+(defsnippet enlive-sources-snippet "templates/enlive/enlive-sources-content.html" [:#content :> :*]
+  [{:keys [title files] :as context}]
+  [:h1]                        (h/content title)
+  [:div.example]               (h/substitute (navigation-pills-snippet "sources"))
+  [:div.example-content :> :*] (h/clone-for [{:keys [name type content]} files]
+                                            [:.file-name] (h/content name)
+                                            [:code] (h/do->
+                                                    (h/set-attr :class type)
+                                                    (h/content content))))
+
+(defn enlive-signup-page
   [context]
   (ring-resp/response
    (apply str (layout "enlive" "Enlive :: Demo"
-                      (enlive-page-snippet (merge context {:title "Enlive"}))))))
+                      (enlive-signup-snippet (merge context {:title "Enlive"}))))))
+
+(defn enlive-sources-page
+  [context]
+  (ring-resp/response
+   (apply str (layout "enlive" "Enlive :: Demo"
+                      (enlive-sources-snippet (merge context {:title "Enlive"}))))))

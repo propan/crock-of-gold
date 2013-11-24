@@ -95,7 +95,7 @@
 
 (defn hiccup-signup-page
   [context]
-  (layout "hiccup" "Hiccup Signup :: Demo"
+  (layout "hiccup" "Hiccup :: Demo"
           [:h1 "Hiccup"]
           (navigation-pills "form")
           (signup-form context)))

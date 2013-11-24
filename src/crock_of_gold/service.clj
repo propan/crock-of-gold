@@ -46,9 +46,31 @@
                                         :type    "clojure"
                                         :content (read-source-file "./src/crock_of_gold/views/hiccup.clj")}]}))
 
-(defn enlive-page
+(defn enlive-signup-get
   [request]
-  (enlive/enlive-page {:file (read-source-file "./src/crock_of_gold/views/enlive.clj")}))
+  (enlive/enlive-signup-page {}))
+
+(defn enlive-signup-post
+  [request]
+  (signup-handler request enlive/enlive-signup-page))
+
+(defn enlive-sources-get
+  [request]
+  (enlive/enlive-sources-page {:files [{:name    "src/crock_of_gold/views/enlive.clj"
+                                        :type    "clojure"
+                                        :content (read-source-file "./src/crock_of_gold/views/enlive.clj")}
+                                       {:name    "resources/templates/enlive/layout.html"
+                                        :type    "html"
+                                        :content (read-source-file "./resources/templates/enlive/layout.html")}
+                                       {:name    "resources/templates/enlive/enlive-signup-content.html"
+                                        :type    "html"
+                                        :content (read-source-file "./resources/templates/enlive/enlive-signup-content.html")}
+                                       {:name    "resources/templates/enlive/enlive-sources-content.html"
+                                        :type    "html"
+                                        :content (read-source-file "./resources/templates/enlive/enlive-sources-content.html")}
+                                       {:name    "resources/templates/enlive/navigation-pills.html"
+                                        :type    "html"
+                                        :content (read-source-file "./resources/templates/enlive/navigation-pills.html")}]}))
 
 (defn selmer-signup-get
   [request]
@@ -110,7 +132,8 @@
      ^:interceptors [(body-params/body-params) bootstrap/html-body]
      ["/hiccup" {:get hiccup-signup-get :post hiccup-signup-post}
       ["/sources" {:get hiccup-sources-get}]]
-     ["/enlive" {:get enlive-page}]
+     ["/enlive" {:get enlive-signup-get :post enlive-signup-post}
+      ["/sources" {:get enlive-sources-get}]]
      ["/selmer" {:get selmer-signup-get :post selmer-signup-post}
       ["/sources" {:get selmer-sources-get}]]
      ["/clj-jade" {:get jade-signup-get :post jade-signup-post}
