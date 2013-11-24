@@ -50,9 +50,34 @@
   [request]
   (enlive/enlive-page {:file (read-source-file "./src/crock_of_gold/views/enlive.clj")}))
 
-(defn selmer-page
+(defn selmer-signup-get
   [request]
-  (selmer/selmer-page {:file (read-source-file "./resources/templates/selmer/selmer-page.html")}))
+  (selmer/selmer-signup-page {}))
+
+(defn selmer-signup-post
+  [request]
+  (signup-handler request selmer/selmer-signup-page))
+
+(defn selmer-sources-get
+  [request]
+  (selmer/selmer-sources-page {:files [{:name    "src/crock_of_gold/views/selmer.clj"
+                                        :type    "clojure"
+                                        :content (read-source-file "./src/crock_of_gold/views/selmer.clj")}
+                                       {:name    "resources/templates/selmer/layout.html"
+                                        :type    "django"
+                                        :content (read-source-file "./resources/templates/selmer/layout.html")}
+                                       {:name    "resources/templates/selmer/selmer-signup-page.html"
+                                        :type    "django"
+                                        :content (read-source-file "./resources/templates/selmer/selmer-signup-page.html")}
+                                       {:name    "resources/templates/selmer/selmer-sources-page.html"
+                                        :type    "django"
+                                        :content (read-source-file "./resources/templates/selmer/selmer-sources-page.html")}
+                                       {:name    "resources/templates/selmer/navigation-pills.html"
+                                        :type    "django"
+                                        :content (read-source-file "./resources/templates/selmer/navigation-pills.html")}
+                                       {:name    "resources/templates/selmer/navbar.html"
+                                        :type    "django"
+                                        :content (read-source-file "./resources/templates/selmer/navbar.html")}]}))
 
 (defn jade-signup-get
   [request]
@@ -64,20 +89,20 @@
 
 (defn jade-sources-get
   [request]
-  (jade/jade-sources-page {:files [{:name "src/crock_of_gold/views/jade.clj"
-                                    :type "clojure"
+  (jade/jade-sources-page {:files [{:name    "src/crock_of_gold/views/jade.clj"
+                                    :type    "clojure"
                                     :content (read-source-file "./src/crock_of_gold/views/jade.clj")}
-                                   {:name "resources/templates/jade/layout.jade"
-                                    :type "javascript"
+                                   {:name    "resources/templates/jade/layout.jade"
+                                    :type    "javascript"
                                     :content (read-source-file "./resources/templates/jade/layout.jade")}
-                                   {:name "resources/templates/jade/mixins.jade"
-                                    :type "javascript"
+                                   {:name    "resources/templates/jade/mixins.jade"
+                                    :type    "javascript"
                                     :content (read-source-file "./resources/templates/jade/mixins.jade")}
-                                   {:name "resources/templates/jade/jade-signup-page.jade"
-                                    :type "javascript"
+                                   {:name    "resources/templates/jade/jade-signup-page.jade"
+                                    :type    "javascript"
                                     :content (read-source-file "./resources/templates/jade/jade-signup-page.jade")}
-                                   {:name "resources/templates/jade/jade-sources-page.jade"
-                                    :type "javascript"
+                                   {:name    "resources/templates/jade/jade-sources-page.jade"
+                                    :type    "javascript"
                                     :content (read-source-file "./resources/templates/jade/jade-sources-page.jade")}]}))
 
 (defroutes routes
@@ -86,7 +111,8 @@
      ["/hiccup" {:get hiccup-signup-get :post hiccup-signup-post}
       ["/sources" {:get hiccup-sources-get}]]
      ["/enlive" {:get enlive-page}]
-     ["/selmer" {:get selmer-page}]
+     ["/selmer" {:get selmer-signup-get :post selmer-signup-post}
+      ["/sources" {:get selmer-sources-get}]]
      ["/clj-jade" {:get jade-signup-get :post jade-signup-post}
       ["/sources" {:get jade-sources-get}]]]]])
 

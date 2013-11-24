@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Selmer :: Demo
+{% endblock %}
+
+{% block header %}
+    {% include "navbar.html" %}
+{% endblock %}
+
+{% block content %}
+    <h1>Selmer</h1>
+    {% include "navigation-pills.html" %}
+    <div class="example-content">
+      <div class="expand col-lg-8 col-lg-offset-2">
+        {% if success %}
+            <div class="alert alert-success">
+              You are a great person, {{ name }}!
+            </div>
+        {% endif %}
+         <div class="col-lg-10 col-lg-offset-1">
+           <form method="post" action="/selmer" accept-charset="UTF-8">
+             <fieldset>
+               <legend>Sign up</legend>
+               <div class="form-group{% if data-errors.username %} has-error{% endif %}">
+                 <label for="name" class="control-label hidden">Username:</label>
+                 <input type="text" class="form-control" id="username" name="username" placeholder="Username" autocomlete="off" value="{{ data.username }}">
+                 {% if data-errors.username %}
+                     <p class="help-block">{{ data-errors.username }}</p>
+                 {% endif %}
+               </div>
+
+               <div class="form-group{% if data-errors.email %} has-error{% endif %}">
+                 <label for="email" class="control-label hidden">Email:</label>
+                 <input type="text" class="form-control" id="email" name="email" placeholder="bob@the-bobs.com" autocomlete="off" value="{{ data.email }}">
+                 {% if data-errors.email %}
+                     <p class="help-block">{{ data-errors.email }}</p>
+                 {% endif %}
+               </div>
+
+               <div class="form-group{% if data-errors.password %} has-error{% endif %}">
+                 <label for="password" class="control-label hidden">Password:</label>
+                 <input type="password" class="form-control" id="password" name="password" placeholder="Password" autocomlete="off" value="{{ data.password }}">
+                 {% if data-errors.password %}
+                     <p class="help-block">{{ data-errors.password }}</p>
+                 {% endif %}
+               </div>
+
+               <div class="form-group">
+                 <button type="submit" class="btn btn-default btn-block">Sign up</button>
+               </div>
+             </fieldset>
+           </form>
+         </div>
+      </div>
+    </div>
+{% endblock %}
