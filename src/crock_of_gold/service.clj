@@ -120,4 +120,4 @@
               ::bootstrap/routes        routes
               ::bootstrap/resource-path "/public"
               ::bootstrap/type          :jetty
-              ::bootstrap/port          8080})
+              ::bootstrap/port          (Integer/valueOf (or (System/getenv "PORT") "8080"))})
