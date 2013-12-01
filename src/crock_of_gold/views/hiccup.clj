@@ -1,6 +1,8 @@
 (ns crock-of-gold.views.hiccup
-  (:require [hiccup.page :as h]
-            [hiccup.element :as e]
+  (:require [hiccup.def :refer [defelem]]
+            [hiccup.form :refer [submit-button]]
+            [hiccup.page :refer [html5 include-js include-css]]
+            [hiccup.element :refer [link-to]]
             [ring.util.response :as ring-resp]))
 
 (defn head
@@ -8,13 +10,17 @@
   [:head
    [:title title]
    [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-   [:link {:href "/css/bootstrap.min.css" :rel "stylesheet" :type "text/css"}]
-   [:link {:href "/css/custom.css" :rel "stylesheet" :type "text/css"}]
-   [:link {:href "/css/railscasts.css"  :rel "stylesheet" :type "text/css"}]   
+   (include-css "/css/bootstrap.min.css" "/css/custom.css" "/css/railscasts.css")
    "<!--[if lt IE 9]>"
-   [:script {:src "/js/html5shiv.js"}]
-   [:script {:src "/js/respond.min.js"}]
+   (include-js "/js/html5shiv.js" "/js/respond.min.js")
    "<![endif]-->"])
+
+(defelem navigation
+  [active xs]
+  [:ul
+   (for [x xs]
+     [:li (when (= active (first x)) {:class "active"})
+      (apply link-to (rest x))])])
 
 (defn navbar
   [active]
@@ -23,36 +29,27 @@
     [:div {:class "navbar-header"}
      [:button {:type "button" :class "navbar-toggle" :data-toggle "collapse" :data-target ".navbar-ex1-collapse"}
       [:span {:class "sr-only"} "Toggle navigation"]
-      [:span {:class "icon-bar"}]
-      [:span {:class "icon-bar"}]
-      [:span {:class "icon-bar"}]]
-     [:a {:class "navbar-brand" :href "/"} "The Crock of Gold"]]
+      (repeat 3 [:span {:class "icon-bar"}])]
+     (link-to {:class "navbar-brand"} "/" "The Crock of Gold")]
     [:div {:class "collapse navbar-collapse navbar-ex1-collapse"}
-     [:ul {:class "nav navbar-nav"}
-      [:li (when (= active "home") {:class "active"})
-       [:a {:href "/"} "Home"]]
-      [:li (when (= active "hiccup") {:class "active"})
-       [:a {:href "/hiccup"} "Hiccup"]]
-      [:li (when (= active "enlive") {:class "active"})
-       [:a {:href "/enlive"} "Enlive"]]
-      [:li (when (= active "selmer") {:class "active"})
-       [:a {:href "/selmer"} "Selmer"]]
-      [:li (when (= active "clj-jade") {:class "active"})
-       [:a {:href "/clj-jade"} "clj-jade"]]]]]])
+     (navigation {:class "nav navbar-nav"}
+                 active [["home" "/" "Home"]
+                         ["hiccup" "/hiccup" "Hiccup"]
+                         ["enlive" "/enlive" "Enlive"]
+                         ["selmer" "/selmer" "Selmer"]
+                         ["clj-jade" "/clj-jade" "clj-jade"]])]]])
 
 (defn- navigation-pills
   [active]
   [:div {:class "example"}
-   [:ul {:class "nav nav-pills nav-justified"}
-    [:li (when (= active "form") {:class "active"})
-     [:a {:href "/hiccup"} "Signup Form"]]
-    [:li (when (= active "sources") {:class "active"})
-     [:a {:href "/hiccup/sources"} "Sources"]]]])
+   (navigation {:class "nav nav-pills nav-justified"}
+               active [["form" "/hiccup" "Signup Form"]
+                       ["sources" "/hiccup/sources" "Sources"]])])
 
 (defn layout
   [active title & content]
   (ring-resp/response
-   (h/html5
+   (html5
     (head title)
     [:body
      (navbar active)
@@ -60,15 +57,12 @@
       content]
      [:footer
       [:nav {:class "navbar navbar-default navbar-fixed-bottom" :role "navigation"}
-       [:p {:class "navbar-text pull-right"}
-        "The Crock of Gold &copy; 2013"]]]
+       [:p {:class "navbar-text pull-right"} "The Crock of Gold &copy; 2013"]]]
      [:a {:href "https://github.com/propan/crock-of-gold"}
       [:img {:style "position: absolute; top: 0; right: 0; border: 0; z-index: 6000;"
              :src "https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"
              :alt "Fork me on GitHub"}]]
-     [:script {:src "//code.jquery.com/jquery.js"}]
-     [:script {:src "/js/bootstrap.min.js"}]
-     [:script {:src "/js/highlight.pack.js"}]
+     (include-js "//code.jquery.com/jquery.js" "/js/bootstrap.min.js" "/js/highlight.pack.js")
      [:script
       "hljs.initHighlightingOnLoad();"]])))
 
@@ -95,7 +89,7 @@
        (form-input context "text" "email" "Email:" "bob@the-bobs.com")
        (form-input context "password" "password" "Password:" "Password")
        [:div {:class "form-group"}
-        [:button {:type "submit" :class "btn btn-default btn-block"} "Sign up"]]]]]]])
+        (submit-button {:class "btn btn-default btn-block"} "Sign up")]]]]]])
 
 (defn hiccup-signup-page
   [context]
